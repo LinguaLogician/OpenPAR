@@ -18,14 +18,14 @@ import torch.nn.functional as F
 from minigpt4.models.base_model import BaseModel
 from minigpt4.models.Qformer import BertConfig, BertLMHeadModel
 from minigpt4.models.eva_vit import create_eva_vit_g
-from transformers import AutoTokenizer
+from transformers import BertTokenizer
 
 from local import blip2_path, google_bert_path
 
 class Blip2Base(BaseModel):
     @classmethod
     def init_tokenizer(cls):
-        tokenizer = AutoTokenizer.from_pretrained(blip2_path)
+        tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
         tokenizer.add_special_tokens({"bos_token": "[DEC]"})
         return tokenizer
 
@@ -41,9 +41,9 @@ class Blip2Base(BaseModel):
 
     @classmethod
     def init_Qformer(cls, num_query_token, vision_width, cross_attention_freq=2):
-        encoder_config = BertConfig.from_pretrained(blip2_path)
+        encoder_config = BertConfig.from_pretrained("bert-base-uncased")
         encoder_config.encoder_width = vision_width
-        
+        # insert cross-attention layer every other block
         encoder_config.add_cross_attention = True
         encoder_config.cross_attention_freq = cross_attention_freq
         encoder_config.query_length = num_query_token
@@ -67,7 +67,7 @@ class Blip2Base(BaseModel):
 
     def load_from_pretrained(self, url_or_filename):
         
-        checkpoint = torch.load(google_bert_path, map_location="cpu")
+        checkpoint = torch.load(url_or_filename, map_location="cpu")
         state_dict = checkpoint["model"]
 
         msg = self.load_state_dict(state_dict, strict=False)

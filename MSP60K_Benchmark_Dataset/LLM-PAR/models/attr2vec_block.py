@@ -57,7 +57,9 @@ class SeqPAR2(Blip2Base):
         freeze_qformer=False,
         num_query_token=32,
         #LLM Config
-        llama_model=vicuna_7b_path,
+        # llama_model=vicuna_7b_path,
+        # llama_model='lmsys/vicuna-7b-v1.5',
+        llama_model='lmsys/vicuna-7b-delta-v1.1',
         max_txt_len=100, 
         end_sym='</s>', 
         #LoRA Confing 
@@ -103,7 +105,7 @@ class SeqPAR2(Blip2Base):
                 layer.output = None
                 layer.intermediate = None
             self.load_from_pretrained(blip2_path)
-
+            
             img_f_dim = self.Qformer.config.hidden_size
             print('Loading Q-Former Done')
         # init LLaMa    
@@ -167,7 +169,7 @@ class SeqPAR2(Blip2Base):
         print(f"max text length: {max_txt_len}")
 
         
-    def encode_img(self, im):
+    def encode_img(self, im, imgname=None):
         with self.maybe_autocast():
             device = im.device
             im_embeds = self.ln_vision(self.visual_encoder(im)).to(device)#[8, 257, 1408]
@@ -395,7 +397,7 @@ class SeqPAR2(Blip2Base):
             # prefix_allowed_tokens_fn=prefix_allowed_tokens_fn
         ) 
         answers = []
-        breakpoint()
+        # breakpoint()
         for output_token in outputs['sequences']:
             if output_token[0] == 0:
                 output_token = output_token[1:]

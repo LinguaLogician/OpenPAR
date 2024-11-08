@@ -69,10 +69,10 @@ def main(args):
     optimizer = make_optimizer(model, args, no_select_names=['llm','llama_proj','llama_model','query_tokens','Qformer'])
     optimizer_llm = make_optimizer(model, args, select_names=['llm','llama_proj','llama_model','query_tokens','Qformer'])
     get_parameters(model)
-    if args.stage1_ckpt_path is not None:
-        print(f'Loading The Backbone Model')
-        start_epoch = loading_only_update(model, args.stage1_ckpt_path, 
-                                          optimizer, optimizer_llm)
+    # if args.stage1_ckpt_path is not None:
+    #     print(f'Loading The Backbone Model')
+    #     start_epoch = loading_only_update(model, args.stage1_ckpt_path, 
+    #                                       optimizer, optimizer_llm)
       
         
     lr_scheduler = get_linear_schedule_with_warmup(
